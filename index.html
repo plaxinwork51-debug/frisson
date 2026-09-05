@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="color-scheme" content="dark"><meta name="theme-color" content="#070A14">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%2348C8FF'/%3E%3C/svg%3E">
+<title>ФРИССОН · Северный Звук</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070A14;--cyan:#48C8FF;--blue:#3D6BFF;--violet:#8A3DFF;--mag:#FF3FB4;--txt:#EAF0FF;--mut:#8B95B8;--sat:max(0px,env(safe-area-inset-top));--sab:max(0px,env(safe-area-inset-bottom))}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Onest,system-ui,-apple-system,sans-serif;overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+canvas#c{position:fixed;inset:0;z-index:1;touch-action:none;display:block}
+.scr{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;padding:calc(var(--sat) + 20px) 20px calc(var(--sab) + 20px);overflow-y:auto;background:
+ radial-gradient(120% 60% at 50% 0%,rgba(72,200,255,.22),transparent 60%),
+ radial-gradient(80% 40% at 20% 25%,rgba(138,61,255,.28),transparent 60%),
+ radial-gradient(70% 35% at 85% 18%,rgba(255,63,180,.18),transparent 60%),
+ linear-gradient(#070A14,#05070F 60%,#03040a)}
+.scr[hidden]{display:none}
+.logo{width:110px;color:#fff;margin:22px auto 0}
+.logo svg{width:100%;height:auto;display:block}
+h1{font-family:Unbounded;font-weight:900;font-size:40px;letter-spacing:.02em;margin:14px 0 2px;line-height:1;background:linear-gradient(90deg,var(--cyan),var(--blue) 40%,var(--violet) 70%,var(--mag));-webkit-background-clip:text;background-clip:text;color:transparent}
+.slogan{font-size:14px;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;font-weight:500;margin-bottom:22px}
+.cards{width:100%;max-width:420px;display:flex;flex-direction:column;gap:10px}
+.card{border-radius:18px;padding:14px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden;cursor:pointer;min-height:64px}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.card b{font-family:Unbounded;font-weight:700;font-size:17px;display:block;letter-spacing:.02em}
+.card span{font-size:13px;color:var(--mut)}
+.card .n{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:Unbounded;font-size:11px;color:var(--c)}
+.card.own{border:1.5px dashed rgba(255,255,255,.3);background:transparent;text-align:center}
+.tracks{display:none;flex-direction:column;gap:6px;margin-top:10px}
+.card.open .tracks{display:flex}
+.tr{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.tr small{color:var(--mut);font-weight:400}
+.mode{width:100%;max-width:420px;display:flex;background:rgba(255,255,255,.06);border-radius:14px;padding:4px;margin-top:16px}
+.mode div{flex:1;text-align:center;padding:11px;border-radius:11px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
+.mode .on{background:var(--cyan);color:#041018}
+.hint{margin-top:auto;padding-top:18px;color:var(--mut);font-size:12px;text-align:center}
+#mute{position:fixed;z-index:7;top:calc(var(--sat) + 14px);left:14px;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.08);border:0;color:#fff;font-size:18px}
+/* разбор */
+.an{justify-content:center;gap:18px;text-align:center}
+.an canvas{width:300px;height:110px}
+.an .ph{font-family:Unbounded;font-weight:700;font-size:20px;min-height:28px}
+.an .tr2{color:var(--mut);font-size:14px}
+.plate{padding:10px 18px;border-radius:999px;border:1px solid var(--cyan);color:var(--cyan);font-family:Unbounded;font-size:13px;letter-spacing:.06em;opacity:0;transition:opacity .3s}
+/* HUD */
+#hud{position:fixed;inset:0;z-index:3;pointer-events:none;padding:calc(var(--sat) + 44px) 20px 0}
+#prog{position:absolute;left:70px;right:20px;top:calc(var(--sat) + 36px);height:3px;background:rgba(255,255,255,.12);border-radius:2px}
+#prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--mag));border-radius:2px}
+#score{font-family:Unbounded;font-weight:900;font-size:36px;letter-spacing:.02em;text-shadow:0 0 24px rgba(72,200,255,.5)}
+#mult{display:inline-block;margin-left:8px;font-family:Unbounded;font-size:17px;color:var(--mag);vertical-align:middle;text-shadow:0 0 14px var(--mag);opacity:0}
+#sync{position:absolute;right:20px;top:calc(var(--sat) + 52px);font-family:Unbounded;font-size:14px;color:var(--cyan)}
+#tname{position:absolute;left:0;right:0;top:calc(var(--sat) + 100px);text-align:center;color:var(--mut);font-size:13px;transition:opacity 1s}
+#toast{position:absolute;left:0;right:0;top:38%;text-align:center;font-family:Unbounded;font-weight:900;font-size:32px;letter-spacing:.08em;color:#fff;text-shadow:0 0 30px var(--mag),0 0 10px #fff;transform:rotate(-4deg) scale(.6);opacity:0;transition:transform .12s,opacity .12s}
+#toast.show{opacity:1;transform:rotate(-4deg) scale(1)}
+#count{position:absolute;left:0;right:0;top:36%;text-align:center;font-family:Unbounded;font-weight:900;font-size:96px;color:#fff;text-shadow:0 0 40px var(--cyan);opacity:0}
+/* пауза, финал */
+.mid{justify-content:center;text-align:center;gap:14px;background:rgba(7,10,20,.85)}
+.mid h2{font-family:Unbounded;font-weight:900;font-size:28px;margin:0}
+.mid p{color:var(--mut);margin:0}
+.btn{width:100%;max-width:420px;padding:16px;border-radius:16px;font-family:Unbounded;font-weight:700;font-size:15px;text-align:center;letter-spacing:.04em;border:0;color:#fff;background:rgba(255,255,255,.08);cursor:pointer}
+.btn.b1{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#041018}
+.row{display:flex;gap:10px;width:100%;max-width:420px}.row .btn{flex:1}
+.end{justify-content:flex-start;text-align:center}
+.end .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);margin-top:18px}
+.end .big{font-family:Unbounded;font-weight:900;font-size:60px;line-height:1;margin:6px 0 8px;text-shadow:0 0 30px rgba(72,200,255,.45)}
+.end .syn{font-family:Unbounded;font-size:18px;color:var(--cyan)}
+.rank{margin:22px auto 0;padding:18px;border-radius:20px;background:linear-gradient(135deg,rgba(72,200,255,.15),rgba(255,63,180,.15));border:1px solid rgba(255,255,255,.12);width:100%;max-width:420px}
+.rank b{font-family:Unbounded;font-weight:900;font-size:24px;display:block;background:linear-gradient(90deg,var(--cyan),var(--mag));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rank span{display:block;margin-top:6px;color:var(--mut);font-size:14px}
+.rec{margin-top:14px;font-size:13px;color:var(--mut)}.rec b{color:#FFD75E}
+.end .btns{margin-top:auto;padding-top:20px;display:flex;flex-direction:column;gap:10px;width:100%;max-width:420px}
+.fun{margin-top:14px;font-size:12px;color:var(--mut);border-top:1px solid rgba(255,255,255,.08);padding-top:12px;width:100%;max-width:420px}
+.fun b{color:var(--txt)}
+</style></head><body>
+<canvas id="c"></canvas>
+<button id="mute" aria-label="звук">🔊</button>
+
+<div id="hud" hidden>
+  <div id="prog"><i></i></div>
+  <div><span id="score">0</span><span id="mult">x1</span></div>
+  <div id="sync">100%</div>
+  <div id="tname"></div>
+  <div id="toast"></div>
+  <div id="count"></div>
+</div>
+
+<section class="scr" id="sStart">
+  <div class="logo"><svg viewBox="0 0 566.22 362.88" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M0,362.03c20.55-46.23,57.32-83.51,98.46-112.14,129.14-89.3,309.9-71.08,418.75,41.98,15.01,15.42,28.95,32.08,39.61,50.84,3.48,6.28,6.72,12.66,9.4,19.32-6.98-8.06-13.65-16.28-20.58-24.34-9.03-10.39-18.54-21.27-28.35-30.9-139.78-136.63-362.71-124.39-489.96,22.84-9.01,9.96-18.89,21.96-27.33,32.4h0Z"/><path d="M292.11,202.22c-1.15,39.97-3.08,79.92-5.28,119.85-.73,13.32-1.68,26.63-3.72,39.95-3.9-26.56-4.24-53.2-5.81-79.9-1.27-26.63-2.44-53.26-3.19-79.9-.12-4.97,3.81-9.1,8.78-9.22,5.12-.14,9.36,4.1,9.22,9.22h0Z"/><path d="M140.66,361.69c12.26-37.96,28.69-74.94,52.74-107.04,19.2-26.25,40.45-47.31,73.7-53.89,10.35-1.95,21.05-1.98,31.01.55.5.13.8.63.67,1.13-.08.33-.34.58-.65.67-9.75,2.68-18.74,5.73-27.17,9.77-16.95,8.06-31.31,19.35-45.79,31.2-7.26,5.97-14.27,12.48-20.6,19.67-12.75,14.48-24.05,30.35-34.19,46.86-10.33,16.64-19.5,34.1-28.04,51.75-.21.46-.76.65-1.22.43-.41-.2-.6-.67-.46-1.09h0Z"/><path d="M431.02,362.36c-16.91-34.95-36.38-69.21-61.99-98.5-6.3-7.19-13.28-13.7-20.51-19.68-14.42-11.85-28.71-23.18-45.61-31.26-8.4-4.06-17.35-7.11-27.08-9.79-.5-.13-.81-.65-.67-1.15.09-.33.35-.57.67-.65,5-1.25,10.17-1.93,15.34-1.95,15.8-.21,31.39,4.82,45.09,12.5,18.28,10.17,31.73,26.55,43.95,42.9,12.06,16.12,22.15,33.51,30.76,51.6,8.53,17.95,15.69,36.41,21.71,55.31.16.47-.1.98-.57,1.14-.44.15-.91-.07-1.1-.48h0Z"/><path d="M283.11,302.54c-85.15,0-171.34-19.68-171.34-57.29h18c0,6.62,12.71,17.07,41.11,25.52,29.85,8.88,69.71,13.77,112.23,13.77s82.37-4.89,112.23-13.77c28.4-8.45,41.11-18.91,41.11-25.52h18c0,37.61-86.2,57.29-171.34,57.29Z"/><path d="M226.02,142.8c1.34,7.51.68,13.03-1.97,16.55-2.65,3.53-7.76,5.96-15.34,7.32-13.43,2.39-21.24-2.54-23.42-14.82-.26-1.44-.54-3.85-.84-7.22l13.75-2.45.71,4.01c.59,3.32,1.2,5.45,1.81,6.38,1.1,1.59,3.02,2.14,5.77,1.65,3.97-.71,5.58-3.16,4.84-7.34l-.96-5.42c-.59-3.32-2.11-5.14-4.55-5.45-.92-.13-3.58.19-7.98.98l-2.1-11.8c4.19-.75,6.72-1.38,7.59-1.91,1.88-1.15,2.52-3.43,1.91-6.82-.41-2.31-1.03-3.88-1.84-4.7-.82-.82-2.35-1.04-4.58-.64-2.74.49-4.26,1.62-4.54,3.38-.16.77.06,2.86.67,6.25l-13.21,2.36c-.68-2.11-1.07-3.5-1.19-4.15-1.12-6.28-.25-11.02,2.61-14.21,2.53-2.91,7.01-4.94,13.44-6.08,6.86-1.22,11.94-.94,15.24.86,3.78,2.01,6.27,6.33,7.45,12.97.98,5.49-.63,10.24-4.83,14.27,6.19,2.1,10.04,7.45,11.57,16.04Z"/><path d="M278.05,139.08c.44,7.1-.81,12.23-3.73,15.38-2.93,3.16-7.98,4.96-15.15,5.4l-21.63,1.33-4.14-67.19,20.97-1.29c7.17-.44,12.1.21,14.78,1.95,3.22,2.15,5.04,6.67,5.46,13.55.36,5.78-1.64,10.31-6,13.59,3.36,2.07,5.75,4.5,7.17,7.27,1.25,2.42,2.01,5.75,2.27,10ZM260.19,110.43c-.23-3.81-2.15-5.6-5.73-5.38l-5.82.36.79,12.74,3.18-.2c5.34-.33,7.87-2.84,7.58-7.52ZM262.83,138.92c-.42-6.88-3.09-10.17-7.99-9.87l-4.72.29,1.13,18.33,3.73-.23c3.22-.2,5.38-.86,6.49-2,1.11-1.13,1.56-3.31,1.36-6.53Z"/><path d="M329.53,118.01c-.57,10.54-2.24,19.78-5.02,27.71-3.04,8.65-7.7,16.73-13.98,24.25l-26.14-1.41.53-9.89,11.64.63c-7.13-12.13-10.24-26.66-9.33-43.58l1.31-24.27,15.16.82c-.99,18.38-1.46,29.15-1.4,32.31.06,9.99,1.4,20.42,4.04,31.28,3.71-10.45,6.12-20.67,7.26-30.67.39-3.14,1.09-13.89,2.08-32.28l15.16.82-1.31,24.27Z"/><path d="M388.54,105.2c-1.76,10.04-7.04,18.12-15.86,24.25,3.85,5.66,6,12.1,6.45,19.33.31,5.04-.29,11.86-1.79,20.46l-14.95-2.62c1.21-6.93,1.88-12.25,2-15.95.12-6.23-.85-11.46-2.89-15.69-1.87.79-3.87,1.48-6,2.08l-4.82,27.52-14.95-2.62,11.6-66.31,14.95,2.62-4.93,28.17c8.84-4.56,14.38-13.27,16.63-26.12l14.95,2.62c-.04.22-.11.62-.21,1.19-.08.43-.14.8-.19,1.08Z"/><path d="M112.75,70.27c2.45,7.69,2.66,13.51.65,17.46-2.01,3.95-6.83,7.14-14.45,9.56-7.69,2.45-13.49,2.64-17.42.58-3.93-2.06-7.11-6.93-9.56-14.62l-7.91-24.84c-2.42-7.62-2.62-13.42-.58-17.42,2.04-4,6.86-7.21,14.48-9.63,9.29-2.96,15.98-2.51,20.05,1.35,2.66,2.54,5.61,8.91,8.86,19.11l-14.78,4.71-2.72-8.54c-.73-2.29-1.55-3.79-2.47-4.49-1.17-1-2.9-1.14-5.21-.41-2.3.73-3.69,1.83-4.15,3.28-.34,1.1-.13,2.84.62,5.2l9.26,29.1c.75,2.37,1.59,3.9,2.5,4.6,1.14.94,2.9,1.03,5.28.27,2.31-.73,3.69-1.82,4.15-3.27.27-1.08.03-2.8-.72-5.16l-2.72-8.54,14.78-4.71,2.04,6.39Z"/><path d="M163.02,58.39c1.8,7.86,1.53,13.68-.8,17.45-2.34,3.77-7.4,6.55-15.19,8.33-7.86,1.8-13.67,1.51-17.41-.87-3.74-2.38-6.51-7.5-8.31-15.36l-5.82-25.41c-1.78-7.79-1.49-13.59.87-17.41,2.36-3.81,7.44-6.61,15.23-8.4,7.79-1.78,13.56-1.49,17.3.89,3.74,2.38,6.51,7.5,8.31,15.36l3.39,14.8-26.91,6.16,2.93,12.8c.55,2.42,1.33,4.07,2.34,4.96,1.01.89,2.79,1.05,5.33.46,2.4-.55,3.9-1.53,4.5-2.93.52-1.09.5-2.84-.05-5.25l-1.41-6.17,14.8-3.39.91,3.97ZM143.14,39.58l-1.14-5c-.57-2.48-1.29-4.14-2.17-4.98-1.18-1.15-3.01-1.44-5.48-.87-2.55.58-4.11,1.65-4.67,3.19-.44,1.07-.37,2.88.21,5.43l1.14,5,12.12-2.77Z"/><path d="M215.08,51.54c1.01,7.04.19,12.25-2.47,15.64-2.66,3.38-7.55,5.59-14.66,6.61l-21.45,3.09-9.59-66.63,20.8-2.99c7.11-1.02,12.07-.77,14.89.75,3.38,1.89,5.56,6.24,6.54,13.06.83,5.74-.8,10.41-4.87,14.04,3.52,1.79,6.1,4.01,7.74,6.67,1.45,2.31,2.47,5.57,3.07,9.78ZM194.95,24.43c-.54-3.77-2.59-5.41-6.15-4.89l-5.77.83,1.82,12.63,3.16-.45c5.3-.76,7.61-3.47,6.95-8.11ZM199.89,52.62c-.98-6.82-3.9-9.88-8.77-9.19l-4.68.67,2.62,18.18,3.7-.53c3.19-.46,5.29-1.3,6.3-2.52,1.01-1.22,1.29-3.42.83-6.62Z"/><path d="M265.37,47.2c.49,8.05-.72,13.75-3.63,17.08-2.92,3.34-8.37,5.25-16.34,5.74-8.05.49-13.73-.74-17.03-3.69-3.31-2.96-5.2-8.46-5.7-16.51l-1.6-26.02c-.49-7.98.74-13.66,3.7-17.03,2.95-3.38,8.42-5.31,16.39-5.8,7.98-.49,13.62.75,16.92,3.7,3.3,2.96,5.2,8.46,5.7,16.51l.93,15.15-27.56,1.69.8,13.1c.15,2.48.65,4.24,1.5,5.28.85,1.04,2.58,1.49,5.19,1.33,2.46-.15,4.1-.87,4.91-2.16.69-.99.96-2.72.8-5.19l-.39-6.32,15.15-.93.25,4.06ZM248.82,25.4l-.31-5.12c-.16-2.54-.6-4.3-1.33-5.27-.98-1.32-2.74-1.91-5.27-1.75-2.61.16-4.32.96-5.13,2.39-.61.99-.84,2.78-.68,5.4l.31,5.12,12.41-.76Z"/><path d="M318.55,46.7c-.16,7.85-.87,13.11-2.1,15.8-2.09,4.58-6.48,6.8-13.18,6.66-2.72-.06-5.1-.77-7.13-2.13-1.38-.98-3.15-2.74-5.3-5.28l-.34,16.06-15.18-.32,1.62-77.2,14.19.3-.14,6.49c2.84-2.58,5.04-4.33,6.6-5.25,2.38-1.27,5.1-1.87,8.18-1.81,5.65.12,9.45,2.4,11.41,6.84,1.4,3.04,2.04,7.74,1.9,14.12l-.54,25.73ZM302.86,49.82l.64-30.53c.05-2.41-.25-4.09-.89-5.06-.79-1.33-2.4-2.02-4.84-2.07-2.44-.05-4.04.44-4.81,1.49-.76,1.04-1.17,2.84-1.22,5.39l-.64,30.53c-.05,2.55.24,4.31.89,5.27.79,1.19,2.41,1.8,4.85,1.85,2.44.05,4.12-.53,5.03-1.76.61-.94.95-2.64,1-5.12Z"/><path d="M369.29,73.56l-15.1-1.6,3.24-30.52-12.14-1.29-3.24,30.52-15.1-1.6,7.11-66.94,15.09,1.6-2.51,23.63,12.14,1.29,2.51-23.63,15.1,1.6-7.11,66.94Z"/><path d="M422.99,61.83c-1.66,7.89-3.98,13.03-6.95,15.4-3.35,2.74-8.87,3.3-16.54,1.69l-21.1-4.45,13.88-65.87,14.53,3.06-5.06,24c2.99.03,5.35.23,7.07.59,6.96,1.47,11.5,4.45,13.63,8.94,1.87,3.92,2.05,9.46.54,16.64ZM408.99,58.94c.66-3.14.8-5.42.43-6.84-.51-2.19-2.13-3.58-4.86-4.15-1.79-.38-3.55-.56-5.28-.55l-3.77,17.87,3.12.66c3.16.67,5.5.47,7.04-.58,1.53-1.05,2.64-3.19,3.31-6.4ZM439.86,87.42l-14.53-3.06,13.88-65.87,14.53,3.06-13.88,65.87Z"/><path d="M488.3,102.93l-14.47-4.6,6.43-20.23c-6.52,7.93-13.07,13.27-19.64,16.03l-13.21-4.2,20.4-64.16,14.46,4.6-14.2,44.66c7.41-2.72,14.02-10.47,19.86-23.24,1.62-3.64,3.72-9.51,6.29-17.62l14.47,4.6-20.4,64.15ZM507.02,20.82c-3.82,6.94-9.58,9.19-17.27,6.75-7.69-2.45-11.09-7.6-10.2-15.48l7.38.38c-.69,3.63.2,6.14,2.68,7.55.65.36,1.4.68,2.24.94,2.72.87,4.75.72,6.08-.43,1.33-1.15,2.27-2.37,2.84-3.66l6.25,3.95Z"/></svg></div>
+  <h1>ФРИССОН</h1>
+  <div class="slogan">Почувствуй музыку</div>
+  <div class="cards" id="cards"></div>
+  <div class="mode"><div class="on" data-m="60">60 секунд</div><div data-m="full">Весь трек</div></div>
+  <input type="file" id="file" accept="audio/*" hidden>
+  <div class="hint">Звук включи, без него это просто дорога.<br>iPhone: сними беззвучный режим переключателем сбоку.</div>
+</section>
+
+<section class="scr an" id="sAn" hidden>
+  <canvas id="wave" width="600" height="220"></canvas>
+  <div class="ph" id="anPh">Слушаю бочку…</div>
+  <div class="tr2" id="anTr"></div>
+  <div class="plate" id="anPlate">174 BPM · ТРАССА ГОТОВА</div>
+</section>
+
+<section class="scr mid" id="sPause" hidden>
+  <h2>Пауза</h2><p>Трек ждёт. Ты тоже подожди секунду.</p>
+  <button class="btn b1" id="bResume">ДАЛЬШЕ</button><button class="btn" id="bQuit">ВЫЙТИ</button>
+</section>
+
+<section class="scr end" id="sEnd" hidden>
+  <div class="logo" style="width:80px"><svg viewBox="0 0 566.22 362.88" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M0,362.03c20.55-46.23,57.32-83.51,98.46-112.14,129.14-89.3,309.9-71.08,418.75,41.98,15.01,15.42,28.95,32.08,39.61,50.84,3.48,6.28,6.72,12.66,9.4,19.32-6.98-8.06-13.65-16.28-20.58-24.34-9.03-10.39-18.54-21.27-28.35-30.9-139.78-136.63-362.71-124.39-489.96,22.84-9.01,9.96-18.89,21.96-27.33,32.4h0Z"/><path d="M292.11,202.22c-1.15,39.97-3.08,79.92-5.28,119.85-.73,13.32-1.68,26.63-3.72,39.95-3.9-26.56-4.24-53.2-5.81-79.9-1.27-26.63-2.44-53.26-3.19-79.9-.12-4.97,3.81-9.1,8.78-9.22,5.12-.14,9.36,4.1,9.22,9.22h0Z"/><path d="M140.66,361.69c12.26-37.96,28.69-74.94,52.74-107.04,19.2-26.25,40.45-47.31,73.7-53.89,10.35-1.95,21.05-1.98,31.01.55.5.13.8.63.67,1.13-.08.33-.34.58-.65.67-9.75,2.68-18.74,5.73-27.17,9.77-16.95,8.06-31.31,19.35-45.79,31.2-7.26,5.97-14.27,12.48-20.6,19.67-12.75,14.48-24.05,30.35-34.19,46.86-10.33,16.64-19.5,34.1-28.04,51.75-.21.46-.76.65-1.22.43-.41-.2-.6-.67-.46-1.09h0Z"/><path d="M431.02,362.36c-16.91-34.95-36.38-69.21-61.99-98.5-6.3-7.19-13.28-13.7-20.51-19.68-14.42-11.85-28.71-23.18-45.61-31.26-8.4-4.06-17.35-7.11-27.08-9.79-.5-.13-.81-.65-.67-1.15.09-.33.35-.57.67-.65,5-1.25,10.17-1.93,15.34-1.95,15.8-.21,31.39,4.82,45.09,12.5,18.28,10.17,31.73,26.55,43.95,42.9,12.06,16.12,22.15,33.51,30.76,51.6,8.53,17.95,15.69,36.41,21.71,55.31.16.47-.1.98-.57,1.14-.44.15-.91-.07-1.1-.48h0Z"/><path d="M283.11,302.54c-85.15,0-171.34-19.68-171.34-57.29h18c0,6.62,12.71,17.07,41.11,25.52,29.85,8.88,69.71,13.77,112.23,13.77s82.37-4.89,112.23-13.77c28.4-8.45,41.11-18.91,41.11-25.52h18c0,37.61-86.2,57.29-171.34,57.29Z"/><path d="M226.02,142.8c1.34,7.51.68,13.03-1.97,16.55-2.65,3.53-7.76,5.96-15.34,7.32-13.43,2.39-21.24-2.54-23.42-14.82-.26-1.44-.54-3.85-.84-7.22l13.75-2.45.71,4.01c.59,3.32,1.2,5.45,1.81,6.38,1.1,1.59,3.02,2.14,5.77,1.65,3.97-.71,5.58-3.16,4.84-7.34l-.96-5.42c-.59-3.32-2.11-5.14-4.55-5.45-.92-.13-3.58.19-7.98.98l-2.1-11.8c4.19-.75,6.72-1.38,7.59-1.91,1.88-1.15,2.52-3.43,1.91-6.82-.41-2.31-1.03-3.88-1.84-4.7-.82-.82-2.35-1.04-4.58-.64-2.74.49-4.26,1.62-4.54,3.38-.16.77.06,2.86.67,6.25l-13.21,2.36c-.68-2.11-1.07-3.5-1.19-4.15-1.12-6.28-.25-11.02,2.61-14.21,2.53-2.91,7.01-4.94,13.44-6.08,6.86-1.22,11.94-.94,15.24.86,3.78,2.01,6.27,6.33,7.45,12.97.98,5.49-.63,10.24-4.83,14.27,6.19,2.1,10.04,7.45,11.57,16.04Z"/><path d="M278.05,139.08c.44,7.1-.81,12.23-3.73,15.38-2.93,3.16-7.98,4.96-15.15,5.4l-21.63,1.33-4.14-67.19,20.97-1.29c7.17-.44,12.1.21,14.78,1.95,3.22,2.15,5.04,6.67,5.46,13.55.36,5.78-1.64,10.31-6,13.59,3.36,2.07,5.75,4.5,7.17,7.27,1.25,2.42,2.01,5.75,2.27,10ZM260.19,110.43c-.23-3.81-2.15-5.6-5.73-5.38l-5.82.36.79,12.74,3.18-.2c5.34-.33,7.87-2.84,7.58-7.52ZM262.83,138.92c-.42-6.88-3.09-10.17-7.99-9.87l-4.72.29,1.13,18.33,3.73-.23c3.22-.2,5.38-.86,6.49-2,1.11-1.13,1.56-3.31,1.36-6.53Z"/><path d="M329.53,118.01c-.57,10.54-2.24,19.78-5.02,27.71-3.04,8.65-7.7,16.73-13.98,24.25l-26.14-1.41.53-9.89,11.64.63c-7.13-12.13-10.24-26.66-9.33-43.58l1.31-24.27,15.16.82c-.99,18.38-1.46,29.15-1.4,32.31.06,9.99,1.4,20.42,4.04,31.28,3.71-10.45,6.12-20.67,7.26-30.67.39-3.14,1.09-13.89,2.08-32.28l15.16.82-1.31,24.27Z"/><path d="M388.54,105.2c-1.76,10.04-7.04,18.12-15.86,24.25,3.85,5.66,6,12.1,6.45,19.33.31,5.04-.29,11.86-1.79,20.46l-14.95-2.62c1.21-6.93,1.88-12.25,2-15.95.12-6.23-.85-11.46-2.89-15.69-1.87.79-3.87,1.48-6,2.08l-4.82,27.52-14.95-2.62,11.6-66.31,14.95,2.62-4.93,28.17c8.84-4.56,14.38-13.27,16.63-26.12l14.95,2.62c-.04.22-.11.62-.21,1.19-.08.43-.14.8-.19,1.08Z"/><path d="M112.75,70.27c2.45,7.69,2.66,13.51.65,17.46-2.01,3.95-6.83,7.14-14.45,9.56-7.69,2.45-13.49,2.64-17.42.58-3.93-2.06-7.11-6.93-9.56-14.62l-7.91-24.84c-2.42-7.62-2.62-13.42-.58-17.42,2.04-4,6.86-7.21,14.48-9.63,9.29-2.96,15.98-2.51,20.05,1.35,2.66,2.54,5.61,8.91,8.86,19.11l-14.78,4.71-2.72-8.54c-.73-2.29-1.55-3.79-2.47-4.49-1.17-1-2.9-1.14-5.21-.41-2.3.73-3.69,1.83-4.15,3.28-.34,1.1-.13,2.84.62,5.2l9.26,29.1c.75,2.37,1.59,3.9,2.5,4.6,1.14.94,2.9,1.03,5.28.27,2.31-.73,3.69-1.82,4.15-3.27.27-1.08.03-2.8-.72-5.16l-2.72-8.54,14.78-4.71,2.04,6.39Z"/><path d="M163.02,58.39c1.8,7.86,1.53,13.68-.8,17.45-2.34,3.77-7.4,6.55-15.19,8.33-7.86,1.8-13.67,1.51-17.41-.87-3.74-2.38-6.51-7.5-8.31-15.36l-5.82-25.41c-1.78-7.79-1.49-13.59.87-17.41,2.36-3.81,7.44-6.61,15.23-8.4,7.79-1.78,13.56-1.49,17.3.89,3.74,2.38,6.51,7.5,8.31,15.36l3.39,14.8-26.91,6.16,2.93,12.8c.55,2.42,1.33,4.07,2.34,4.96,1.01.89,2.79,1.05,5.33.46,2.4-.55,3.9-1.53,4.5-2.93.52-1.09.5-2.84-.05-5.25l-1.41-6.17,14.8-3.39.91,3.97ZM143.14,39.58l-1.14-5c-.57-2.48-1.29-4.14-2.17-4.98-1.18-1.15-3.01-1.44-5.48-.87-2.55.58-4.11,1.65-4.67,3.19-.44,1.07-.37,2.88.21,5.43l1.14,5,12.12-2.77Z"/><path d="M215.08,51.54c1.01,7.04.19,12.25-2.47,15.64-2.66,3.38-7.55,5.59-14.66,6.61l-21.45,3.09-9.59-66.63,20.8-2.99c7.11-1.02,12.07-.77,14.89.75,3.38,1.89,5.56,6.24,6.54,13.06.83,5.74-.8,10.41-4.87,14.04,3.52,1.79,6.1,4.01,7.74,6.67,1.45,2.31,2.47,5.57,3.07,9.78ZM194.95,24.43c-.54-3.77-2.59-5.41-6.15-4.89l-5.77.83,1.82,12.63,3.16-.45c5.3-.76,7.61-3.47,6.95-8.11ZM199.89,52.62c-.98-6.82-3.9-9.88-8.77-9.19l-4.68.67,2.62,18.18,3.7-.53c3.19-.46,5.29-1.3,6.3-2.52,1.01-1.22,1.29-3.42.83-6.62Z"/><path d="M265.37,47.2c.49,8.05-.72,13.75-3.63,17.08-2.92,3.34-8.37,5.25-16.34,5.74-8.05.49-13.73-.74-17.03-3.69-3.31-2.96-5.2-8.46-5.7-16.51l-1.6-26.02c-.49-7.98.74-13.66,3.7-17.03,2.95-3.38,8.42-5.31,16.39-5.8,7.98-.49,13.62.75,16.92,3.7,3.3,2.96,5.2,8.46,5.7,16.51l.93,15.15-27.56,1.69.8,13.1c.15,2.48.65,4.24,1.5,5.28.85,1.04,2.58,1.49,5.19,1.33,2.46-.15,4.1-.87,4.91-2.16.69-.99.96-2.72.8-5.19l-.39-6.32,15.15-.93.25,4.06ZM248.82,25.4l-.31-5.12c-.16-2.54-.6-4.3-1.33-5.27-.98-1.32-2.74-1.91-5.27-1.75-2.61.16-4.32.96-5.13,2.39-.61.99-.84,2.78-.68,5.4l.31,5.12,12.41-.76Z"/><path d="M318.55,46.7c-.16,7.85-.87,13.11-2.1,15.8-2.09,4.58-6.48,6.8-13.18,6.66-2.72-.06-5.1-.77-7.13-2.13-1.38-.98-3.15-2.74-5.3-5.28l-.34,16.06-15.18-.32,1.62-77.2,14.19.3-.14,6.49c2.84-2.58,5.04-4.33,6.6-5.25,2.38-1.27,5.1-1.87,8.18-1.81,5.65.12,9.45,2.4,11.41,6.84,1.4,3.04,2.04,7.74,1.9,14.12l-.54,25.73ZM302.86,49.82l.64-30.53c.05-2.41-.25-4.09-.89-5.06-.79-1.33-2.4-2.02-4.84-2.07-2.44-.05-4.04.44-4.81,1.49-.76,1.04-1.17,2.84-1.22,5.39l-.64,30.53c-.05,2.55.24,4.31.89,5.27.79,1.19,2.41,1.8,4.85,1.85,2.44.05,4.12-.53,5.03-1.76.61-.94.95-2.64,1-5.12Z"/><path d="M369.29,73.56l-15.1-1.6,3.24-30.52-12.14-1.29-3.24,30.52-15.1-1.6,7.11-66.94,15.09,1.6-2.51,23.63,12.14,1.29,2.51-23.63,15.1,1.6-7.11,66.94Z"/><path d="M422.99,61.83c-1.66,7.89-3.98,13.03-6.95,15.4-3.35,2.74-8.87,3.3-16.54,1.69l-21.1-4.45,13.88-65.87,14.53,3.06-5.06,24c2.99.03,5.35.23,7.07.59,6.96,1.47,11.5,4.45,13.63,8.94,1.87,3.92,2.05,9.46.54,16.64ZM408.99,58.94c.66-3.14.8-5.42.43-6.84-.51-2.19-2.13-3.58-4.86-4.15-1.79-.38-3.55-.56-5.28-.55l-3.77,17.87,3.12.66c3.16.67,5.5.47,7.04-.58,1.53-1.05,2.64-3.19,3.31-6.4ZM439.86,87.42l-14.53-3.06,13.88-65.87,14.53,3.06-13.88,65.87Z"/><path d="M488.3,102.93l-14.47-4.6,6.43-20.23c-6.52,7.93-13.07,13.27-19.64,16.03l-13.21-4.2,20.4-64.16,14.46,4.6-14.2,44.66c7.41-2.72,14.02-10.47,19.86-23.24,1.62-3.64,3.72-9.51,6.29-17.62l14.47,4.6-20.4,64.15ZM507.02,20.82c-3.82,6.94-9.58,9.19-17.27,6.75-7.69-2.45-11.09-7.6-10.2-15.48l7.38.38c-.69,3.63.2,6.14,2.68,7.55.65.36,1.4.68,2.24.94,2.72.87,4.75.72,6.08-.43,1.33-1.15,2.27-2.37,2.84-3.66l6.25,3.95Z"/></svg></div>
+  <div class="k" id="eTrack"></div>
+  <div class="big" id="eScore">0</div>
+  <div class="syn" id="eSync">СИНХРОН 0%</div>
+  <div class="rank"><b id="eRank"></b><span id="eQuip"></span></div>
+  <div class="rec" id="eRec"></div>
+  <div class="btns">
+    <button class="btn b1" id="bShare">ПОДЕЛИТЬСЯ</button>
+    <div class="row"><button class="btn" id="bAgain">ЕЩЁ РАЗ</button><button class="btn" id="bOther">ДРУГОЙ ТРЕК</button></div>
+  </div>
+  <div class="fun"><b>Северный Звук</b>: звук и свет для твоего события → taplink.cc/severzvyk</div>
+</section>
+
+<script>
+/* ============ ФРИССОН · прототип этапа 2 ============ */
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var cv=$('c'),ctx=cv.getContext('2d'),W=0,H=0,DPR=1;
+var DBG=/[?&]dbg=1/.test(location.search);
+var TEXTS={
+  ranks:[[0,'ГЛУХОЙ','Ты вообще слышал, что играло?'],[40,'СЛУШАТЕЛЬ','Бит поймал, дорогу нет'],[60,'ТАНЦПОЛ','Уже качаешь, ещё не ведёшь'],[75,'ДИДЖЕЙ','Держишь бит, как пульт'],[90,'РЕЗИДЕНТ СЕВЕРНОГО ЗВУКА','Это твоя трасса. Забирай.']],
+  anPhrases:['Слушаю бочку…','Ищу снейр…','Считаю бит…','Строю трассу…','Ставлю блоки…','Почти… держи палец наготове'],
+  sections:{dnb:['DRUM & BASS','174 в минуту, держись','var(--mag)'],techno:['TECHNO','от мягкого к злому','var(--violet)'],house:['HOUSE','качает, не ломает','var(--cyan)'],other:['ДРУГОЕ','',' var(--blue)']}
+};
+
+/* ---------- аудио ---------- */
+var AC=window.AudioContext||window.webkitAudioContext, actx=null, gain=null, muted=false;
+var unmuteEl=null;
+function audioInit(){if(!actx){actx=new AC();gain=actx.createGain();gain.connect(actx.destination)}if(actx.state==='suspended')actx.resume();
+  if(!unmuteEl){unmuteEl=document.createElement('audio');unmuteEl.setAttribute('playsinline','');unmuteEl.loop=true;unmuteEl.volume=0.01;
+    unmuteEl.src='data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////8AAABhTEFNRTMuMTAwA8MAAAAAAAAAABQgJAUHQQAB9AAAAnGMHkkIAAAAAAAAAAAAAAAAAAAA//sQxAADgnABGiAAQBCqgCRMAAgEAH///////////////7+n/9FTuQsQH//////2NG0jWUGlio5gLQTOtIoeR2WX////X4s9Ah/////VCZSNzOWvKpcpzjhF6ELl///////+0QKqHTuwyM3HnH1pULqGTa3qAlBtZUgXAv/7EMQKA8FMAxN4BgAIKgAiIDwAAAKq6pfMGMR68v1xGvj4H8v/Z5MExEhoEK/g9/6h//////9cVIY83kbpHNHMlPMmT5WFjEMj2sAPtvdgE4h0f1ejK0BAAB///+lPTZ0z2WU2M9YeWKxDElqM//sQxA0DwQwCEXgAAAgpgCRAAAAA9DiWO1PAkeSDtnMIoADAIA//4ALmDcAIC5yVjQAAAAAAAADh4gACAAABTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+    unmuteEl.play().catch(function(){})}}
+$('mute').onclick=function(){muted=!muted;this.textContent=muted?'🔇':'🔊';if(gain)gain.gain.value=muted?0:1};
+
+/* ---------- состояние ---------- */
+var state='idle', mode='60', lib=[], track=null, buf=null, res=null, chart=null, roundFrom=0, roundTo=0;
+var src=null,startAt=0,offsetT=0,latency=0;   // трек-время = actx.currentTime - startAt (+ offsetT задаёт старт)
+var score=0,streak=0,mult=1,hits=0,misses=0,total=0,lastTs=0,shake=0,toastT=0;
+var shipX=0,targetX=0,down=false,autopilot=false;
+
+/* ---------- библиотека ---------- */
+fetch('tracks.json').then(function(r){return r.json()}).then(function(l){lib=l;buildCards()}).catch(function(){buildCards()});
+function buildCards(){
+  var box=$('cards');box.innerHTML='';
+  ['dnb','techno','house','other'].forEach(function(sec){
+    var list=lib.filter(function(t){return t.section===sec});if(!list.length)return;
+    var T=TEXTS.sections[sec],c=document.createElement('div');c.className='card';c.style.setProperty('--c',T[2]);
+    c.innerHTML='<b>'+T[0]+'</b><span>'+T[1]+'</span><div class="n">'+list.length+' '+plural(list.length)+'</div><div class="tracks"></div>';
+    var tl=c.querySelector('.tracks');
+    list.forEach(function(t){var d=document.createElement('div');d.className='tr';d.innerHTML=t.title+'<small>'+fmt(t.duration||0)+'</small>';d.onclick=function(e){e.stopPropagation();pick(t)};tl.appendChild(d)});
+    c.onclick=function(){var was=c.classList.contains('open');[].forEach.call(box.children,function(x){x.classList.remove('open')});if(!was)c.classList.add('open')};
+    box.appendChild(c);
+  });
+  var own=document.createElement('div');own.className='card own';own.innerHTML='<b>+ СВОЙ ТРЕК</b><span>mp3 с телефона, никуда не улетает</span>';
+  own.onclick=function(){audioInit();$('file').click()};box.appendChild(own);
+}
+function plural(n){return n%10===1&&n%100!==11?'ТРЕК':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'ТРЕКА':'ТРЕКОВ')}
+function fmt(t){var m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+(s<10?'0':'')+s}
+[].forEach.call(document.querySelectorAll('.mode div'),function(d){d.onclick=function(){[].forEach.call(document.querySelectorAll('.mode div'),function(x){x.classList.remove('on')});d.classList.add('on');mode=d.dataset.m}});
+$('file').onchange=function(){var f=this.files[0];if(!f)return;var fr=new FileReader();fr.onload=function(){load(fr.result,{title:f.name.replace(/\.\w+$/,''),section:'own'})};fr.readAsArrayBuffer(f);this.value=''};
+function pick(t){audioInit();showAn(t.title);fetch('tracks/'+encodeURIComponent(t.file)).then(function(r){return r.arrayBuffer()}).then(function(ab){load(ab,t)}).catch(function(e){alert('Не смог загрузить трек: '+e)})}
+
+/* ---------- разбор ---------- */
+var anTimer=null;
+function showAn(title){track={title:title};$('sStart').hidden=true;$('sAn').hidden=false;$('anTr').textContent=title;$('anPlate').style.opacity=0;var i=0;$('anPh').textContent=TEXTS.anPhrases[0];clearInterval(anTimer);anTimer=setInterval(function(){i=(i+1)%TEXTS.anPhrases.length;$('anPh').textContent=TEXTS.anPhrases[i]},800);drawWave(0)}
+function load(ab,t){
+  audioInit();track=t;if($('sAn').hidden)showAn(t.title);
+  actx.decodeAudioData(ab.slice(0)).then(function(b){
+    buf=b;var n=b.length,ch=b.numberOfChannels,m=new Float32Array(n);
+    for(var c=0;c<ch;c++){var d=b.getChannelData(c);for(var i=0;i<n;i++)m[i]+=d[i]/ch}
+    var w=new Worker('analyzer.js');
+    w.onmessage=function(e){var d=e.data;
+      if(d.type==='progress')drawWave(d.p);
+      else if(d.type==='done'){res=d.result;w.terminate();onAnalyzed()}
+      else{w.terminate();alert('Бит не нашёл: '+d.message);toStart()}
+    };
+    w.postMessage({pcm:m,sr:b.sampleRate},[m.buffer]);
+  }).catch(function(){alert('Не смог прочитать файл. Возьми обычный mp3.');toStart()});
+}
+function drawWave(p){var c=$('wave'),x=c.getContext('2d');x.clearRect(0,0,600,220);var g=x.createLinearGradient(0,0,600,0);g.addColorStop(0,'#48C8FF');g.addColorStop(.5,'#8A3DFF');g.addColorStop(1,'#FF3FB4');x.strokeStyle=g;x.lineWidth=3;x.beginPath();var ph=performance.now()/300;for(var i=0;i<600;i++){var t=i/600,env=Math.sin(t*Math.PI),v=Math.sin(i*0.35+ph)*0.5+Math.sin(i*0.09-ph)*0.5+Math.sin(i*1.7)*0.2;var y=110+v*env*90;i?x.lineTo(i,y):x.moveTo(i,y)}x.stroke();x.fillStyle='rgba(72,200,255,.18)';x.fillRect(0,0,600*p,220)}
+function onAnalyzed(){
+  clearInterval(anTimer);$('anPh').textContent='Трасса готова';$('anPlate').textContent=Math.round(res.bpm)+' BPM · ТРАССА ГОТОВА';$('anPlate').style.opacity=1;
+  if(mode==='60'&&res.duration>70){roundFrom=res.best60.from;roundTo=res.best60.to}else{roundFrom=0;roundTo=res.duration}
+  chart=buildChart(res,roundFrom,roundTo);
+  setTimeout(startRound,1200);
+}
+
+/* ---------- чарт: из разбора в объекты на трассе ---------- */
+var LANES=[-0.6,0,0.6];
+function buildChart(r,from,to){
+  var objs=[],lastLane={},pat=[1,1,0,0,1,2,2,1,0,1,2,1,1,2,0,1],pi=0,lastKickLane=1,gateDone={};
+  function ok(lane,t){var lt=lastLane[lane];if(lt!==undefined&&t-lt<0.13)return false;lastLane[lane]=t;return true}
+  var secAt=function(t){for(var i=0;i<r.sections.length;i++){var s=r.sections[i];if(t>=s.from&&t<s.to)return s}return null};
+  r.kicks.forEach(function(k){if(k.t<from||k.t>to)return;var s=secAt(k.t);if(s&&s.type==='break')return;
+    if(s&&s.type==='drop'&&!gateDone[s.from]&&k.t-s.from<0.4){gateDone[s.from]=true;objs.push({t:k.t,lane:-1,kind:'gate',v:50,hit:false});[0,1,2].forEach(function(l){lastLane[l]=k.t});return}
+    var lane=pat[pi%pat.length];if(Math.random()<0.12)lane=Math.min(2,Math.max(0,lane+(Math.random()<0.5?-1:1)));pi++;
+    if(!ok(lane,k.t))return;lastKickLane=lane;objs.push({t:k.t,lane:lane,kind:'kick',v:10,hit:false})});
+  r.snares.forEach(function(sn){if(sn.t<from||sn.t>to)return;var s=secAt(sn.t);if(s&&s.type==='break')return;
+    var lane=lastKickLane===1?(Math.random()<0.5?0:2):1;if(!ok(lane,sn.t)){lane=lastKickLane;if(!ok(lane,sn.t))return}
+    objs.push({t:sn.t,lane:lane,kind:'snare',v:15,hit:false})});
+  r.hats.forEach(function(h){if(h.t<from||h.t>to)return;var s=secAt(h.t);if(s&&s.type==='break')return;
+    objs.push({t:h.t,lane:Math.random()<0.5?0:2,kind:'hat',v:2,hit:false,spark:true})});
+  objs.sort(function(a,b){return a.t-b.t});
+  // не больше 6 объектов в секунду: режем хэты, потом снейры
+  var perSec={};objs.forEach(function(o){var k=Math.floor(o.t);perSec[k]=(perSec[k]||0)+1});
+  ['hat','snare'].forEach(function(kind){objs=objs.filter(function(o){var k=Math.floor(o.t);if(perSec[k]>6&&o.kind===kind){perSec[k]--;return false}return true})});
+  var main=objs.filter(function(o){return !o.spark}).length;
+  return {objs:objs,total:main,intensityAt:function(t){var i=Math.floor(t/r.env.step);return r.env.intensity[Math.min(r.env.intensity.length-1,Math.max(0,i))]||0},secAt:secAt};
+}
+
+/* ---------- раунд ---------- */
+function toStart(){state='idle';stopAudio();$('sAn').hidden=true;$('sEnd').hidden=true;$('sPause').hidden=true;$('hud').hidden=true;$('sStart').hidden=false}
+function startRound(){
+  $('sAn').hidden=false;score=0;streak=0;mult=1;hits=0;misses=0;total=chart.total;
+  chart.objs.forEach(function(o){o.hit=false;o.missed=false});
+  $('score').textContent='0';$('mult').style.opacity=0;$('sync').textContent='100%';$('tname').textContent=track.title;$('tname').style.opacity=1;
+  $('hud').hidden=false;$('sAn').hidden=true;state='count';offsetT=roundFrom;shipX=0;targetX=0;
+  // отсчёт 3-2-1 в темпе трека, музыка стартует на «ЛЕТИ»
+  var per=res.period,steps=['3','2','1','ЛЕТИ'],i=0,el=$('count');
+  var t0=actx.currentTime+0.15;
+  function tick(){var d=t0+i*per-actx.currentTime;if(d>0.01){setTimeout(tick,Math.min(50,d*1000));return}
+    el.textContent=steps[i];el.style.opacity=1;el.style.transform='scale(1.2)';setTimeout(function(){el.style.opacity=0},per*700);
+    if(i===3){playFrom(roundFrom,t0+3*per);state='play';lastTs=0;setTimeout(function(){$('tname').style.opacity=0},3000)}
+    i++;if(i<4)setTimeout(tick,50);
+  }
+  tick();
+  requestAnimationFrame(loop);
+}
+function playFrom(t,when){stopAudio();src=actx.createBufferSource();src.buffer=buf;src.connect(gain);startAt=when-t;src.start(when,t)}
+function stopAudio(){if(src){try{src.stop()}catch(e){}src=null}}
+function trackTime(){return actx?actx.currentTime-startAt-latency:0}
+function endRound(){state='end';stopAudio();$('hud').hidden=true;
+  var sync=total?Math.round(100*hits/total):0,r=TEXTS.ranks[0];TEXTS.ranks.forEach(function(x){if(sync>=x[0])r=x});
+  $('eTrack').textContent=track.title;$('eScore').textContent=score.toLocaleString('ru-RU');$('eSync').textContent='СИНХРОН '+sync+'%';$('eRank').textContent=r[1];$('eQuip').textContent=r[2];
+  var key='frisson_'+(track.file||track.title),best=0;try{best=+localStorage.getItem(key)||0}catch(e){}
+  if(score>best){$('eRec').innerHTML='<b>НОВЫЙ РЕКОРД</b> на этом треке';try{localStorage.setItem(key,score)}catch(e){}}else $('eRec').textContent='Твой рекорд на этом треке: '+best.toLocaleString('ru-RU');
+  $('sEnd').hidden=false;
+}
+$('bAgain').onclick=function(){audioInit();$('sEnd').hidden=true;startRound()};
+$('bOther').onclick=toStart;$('bQuit').onclick=toStart;
+$('bShare').onclick=function(){var txt='Я пролетел '+track.title+' на '+$('eSync').textContent.replace('СИНХРОН ','')+' синхрона. Слабо больше? '+location.href.split('?')[0];if(navigator.share)navigator.share({text:txt}).catch(function(){});else{try{navigator.clipboard.writeText(txt);alert('Ссылка скопирована')}catch(e){}}};
+document.addEventListener('visibilitychange',function(){if(document.hidden&&state==='play'){pause()}});
+function pause(){state='pause';offsetT=trackTime();stopAudio();$('sPause').hidden=false}
+$('bResume').onclick=function(){audioInit();$('sPause').hidden=true;var when=actx.currentTime+0.6;playFrom(offsetT,when);state='play';lastTs=0;requestAnimationFrame(loop)};
+
+/* ---------- ввод ---------- */
+function ptr(e){var x=e.clientX/W;targetX=Math.max(-0.85,Math.min(0.85,(x-0.5)*2.2))}
+cv.addEventListener('pointerdown',function(e){down=true;ptr(e);e.preventDefault()});
+cv.addEventListener('pointermove',function(e){if(down||e.pointerType==='mouse')ptr(e);e.preventDefault()});
+addEventListener('pointerup',function(){down=false});addEventListener('pointercancel',function(){down=false});
+document.addEventListener('touchmove',function(e){if(state==='play')e.preventDefault()},{passive:false});
+var keys={};addEventListener('keydown',function(e){keys[e.code]=1});addEventListener('keyup',function(e){keys[e.code]=0});
+
+/* ---------- мир и проекция ---------- */
+var SPEED=24, APPROACH=2.0, CAM_H=1.0, CAM_D=1.6, ROAD_W=1.0, HZ=0.44, SEG=1, CURVE_K=0.0016, STRIPE=2;
+var skyC=null,starsC=null,mtnC=null,SP={},parts=[],beatPulse=0,lastBeatIdx=-1,auroraT=0;
+function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);buildSky();buildSprites()}
+addEventListener('resize',resize);
+function off(w,h){var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*DPR));c.height=Math.max(1,Math.round(h*DPR));var x=c.getContext('2d');x.setTransform(DPR,0,0,DPR,0,0);return{c:c,x:x,w:w,h:h}}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function buildSky(){
+  // базовое небо (градиент), звёзды (широкий слой под параллакс), горы (широкий слой)
+  var s=off(W,H),x=s.x,g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#05070F');g.addColorStop(.45,'#0B0F24');g.addColorStop(1,'#03040a');x.fillStyle=g;x.fillRect(0,0,W,H);skyC=s.c;
+  var st=off(W*2,H*HZ),rnd=mulberry(7);x=st.x;
+  for(var i=0;i<260;i++){var a=0.25+rnd()*0.75,r=rnd();x.fillStyle='rgba('+(r<0.3?'180,230,255':r<0.6?'255,255,255':'220,200,255')+','+a+')';var sz=rnd()<0.15?2.2:1.2;x.beginPath();x.arc(rnd()*W*2,rnd()*H*HZ,sz,0,6.28);x.fill()}
+  starsC=st;
+  var m=off(W*2,H*0.12);x=m.x;x.fillStyle='#04060D';x.beginPath();x.moveTo(0,H*0.12);rnd=mulberry(3);
+  for(i=0;i<=24;i++)x.lineTo(i*W*2/24,H*0.12-(0.35+rnd()*0.65)*H*0.07);x.lineTo(W*2,H*0.12);x.fill();
+  // снежные кромки
+  x.strokeStyle='rgba(120,180,255,.18)';x.lineWidth=1.5;x.beginPath();rnd=mulberry(3);x.moveTo(0,H*0.12);for(i=0;i<=24;i++)x.lineTo(i*W*2/24,H*0.12-(0.35+rnd()*0.65)*H*0.07);x.stroke();
+  mtnC=m;
+}
+var shipImg=new Image();shipImg.onload=buildSprites;shipImg.src='data:image/png;base64,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';
+function buildSprites(){
+  if(!W)return;
+  var base=Math.round(W*0.22);
+  // блок: неоновый куб с гранью, свечение только тут (пререндер)
+  function cube(col,col2){var pad=base*0.5,s=off(base+pad*2,base+pad*2),x=s.x,cx=pad,cy=pad,b=base;
+    x.shadowColor=col;x.shadowBlur=base*0.45;x.fillStyle=col;x.fillRect(cx,cy+b*0.22,b,b*0.78);x.shadowBlur=0;
+    // верхняя грань светлее
+    x.fillStyle=col2;x.beginPath();x.moveTo(cx,cy+b*0.22);x.lineTo(cx+b*0.18,cy);x.lineTo(cx+b*0.82,cy);x.lineTo(cx+b,cy+b*0.22);x.closePath();x.fill();
+    // передняя грань: градиент вниз темнее + внутренний блик
+    var g=x.createLinearGradient(0,cy+b*0.22,0,cy+b);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.35,'rgba(255,255,255,0)');g.addColorStop(1,'rgba(0,0,0,.35)');x.fillStyle=g;x.fillRect(cx,cy+b*0.22,b,b*0.78);
+    x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=Math.max(1.5,base*0.03);x.strokeRect(cx+1,cy+b*0.22+1,b-2,b*0.78-2);
+    x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.arc(cx+b*0.5,cy+b*0.6,b*0.08,0,6.28);x.fill();
+    return s}
+  SP.kick=cube('#48C8FF','#B8ECFF');SP.snare=cube('#FF3FB4','#FFB3E3');SP.gold=cube('#FFD75E','#FFF1B8');
+  // погасший (промах)
+  var d=off(base*2,base*2);d.x.globalAlpha=0.25;d.x.drawImage(SP.kick.c,0,0,base*2,base*2);SP.dead=d;
+  // искра
+  var sp=off(base*0.5,base*0.5),x=sp.x;x.shadowColor='#fff';x.shadowBlur=base*0.12;x.fillStyle='#fff';x.beginPath();x.arc(base*0.25,base*0.25,base*0.06,0,6.28);x.fill();SP.spark=sp;
+  // корабль: меридиан белый + циановое свечение
+  if(shipImg.complete&&shipImg.naturalWidth){var w=Math.round(W*0.30),h=Math.round(w*shipImg.naturalHeight/shipImg.naturalWidth),pad2=Math.round(w*0.2);
+    var m=off(w,h),mx=m.x;mx.drawImage(shipImg,0,0,w,h);mx.globalCompositeOperation='source-in';mx.fillStyle='#fff';mx.fillRect(0,0,w,h);
+    var s2=off(w+pad2*2,h+pad2*2);s2.x.shadowColor='#48C8FF';s2.x.shadowBlur=pad2*0.9;s2.x.drawImage(m.c,pad2,pad2,w,h);s2.x.drawImage(m.c,pad2,pad2,w,h);SP.ship=s2;SP.shipPad=pad2}
+  // кольцо на горизонте
+  var R=Math.round(W*0.42),rg=off(R*2.4,R*2.4),rx=rg.x,c=R*1.2;var grd=rx.createRadialGradient(c,c,R*0.55,c,c,R*1.15);grd.addColorStop(0,'rgba(255,63,180,0)');grd.addColorStop(.5,'rgba(255,63,180,.18)');grd.addColorStop(.62,'rgba(138,61,255,.55)');grd.addColorStop(.7,'rgba(72,200,255,.25)');grd.addColorStop(1,'rgba(72,200,255,0)');rx.fillStyle=grd;rx.fillRect(0,0,R*2.4,R*2.4);
+  rx.strokeStyle='rgba(255,255,255,.55)';rx.lineWidth=2;rx.beginPath();rx.arc(c,c,R*0.62,0,6.28);rx.stroke();
+  // горизонтальные прорези в кольце (ретро)
+  rx.globalCompositeOperation='destination-out';for(var i=0;i<6;i++){var yy=c+R*0.05+i*R*0.11;rx.fillRect(0,yy,R*2.4,R*0.025+i*R*0.01)}
+  SP.ring=rg;
+}
+// кривизна и холм как функции трек-времени
+function curveAt(t){var I=chart?chart.intensityAt(t):0.5;return (Math.sin(t*0.9)*0.7+Math.sin(t*0.37+1.3)*0.6+Math.sin(t*1.9)*0.25)*(0.5+1.5*I)}
+function hillAt(t){var I=chart?chart.intensityAt(t):0.5;var s=chart?chart.secAt(t):null;return (s&&s.type==='break'?2.5:0)-I*3+Math.sin(t*0.3)*0.8}
+function project(x,y,z){var dz=z+CAM_D;if(dz<0.05)dz=0.05;var s=CAM_D/dz;return{x:W/2+s*x*W*0.5,y:H*HZ+s*(CAM_H-y)*H*0.5,s:s}}
+function burst(x,y,col,n){for(var i=0;i<n;i++){var a=Math.random()*6.28,v=60+Math.random()*220;parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-120,life:0.5+Math.random()*0.3,t:0,col:col,r:2+Math.random()*3})}}
+
+/* ---------- цикл ---------- */
+function loop(ts){
+  if(!lastTs)lastTs=ts;var dt=Math.min(0.05,(ts-lastTs)/1000);lastTs=ts;
+  if(state==='play')step(dt);
+  render(dt);
+  if(state==='play'||state==='count')requestAnimationFrame(loop);
+}
+function step(dt){
+  var t=trackTime();
+  if(keys.ArrowLeft||keys.KeyA)targetX=Math.max(-0.85,targetX-3*dt);if(keys.ArrowRight||keys.KeyD)targetX=Math.min(0.85,targetX+3*dt);
+  if(autopilot){var nx=null;for(var i=0;i<chart.objs.length;i++){var o=chart.objs[i];if(!o.hit&&!o.missed&&!o.spark&&o.t>t-0.05){nx=o;break}}if(nx)targetX=nx.lane<0?shipX:LANES[nx.lane]}
+  shipX+=(targetX-shipX)*Math.min(1,dt*14);
+  var lane=nearestLane(shipX);
+  for(i=0;i<chart.objs.length;i++){var o=chart.objs[i];if(o.hit||o.missed)continue;if(o.t>t+0.09)break;
+    if(Math.abs(o.t-t)<=0.09){var onLane=o.lane<0||lane===o.lane;if(onLane){o.hit=true;o.hitT=t;onHit(o)}}
+    else if(o.t<t-0.09){o.missed=true;if(!o.spark)onMiss(o)}
+  }
+  // пульс на каждом бите сетки (для кольца и обочин), даже если промазал
+  var gi=Math.floor((t-res.grid[0])/res.period);if(gi!==lastBeatIdx){lastBeatIdx=gi;beatPulse=1}
+  beatPulse=Math.max(0,beatPulse-dt*4);
+  if(shake>0)shake-=dt*3;
+  if(toastT>0){toastT-=dt;if(toastT<=0)$('toast').classList.remove('show')}
+  $('prog').firstChild.style.width=(100*(t-roundFrom)/(roundTo-roundFrom))+'%';
+  if(t>=roundTo+0.6)endRound();
+}
+function nearestLane(x){var b=0,bd=9;for(var i=0;i<3;i++){var d=Math.abs(LANES[i]-x);if(d<bd){bd=d;b=i}}return bd<0.42?b:-2}
+function onHit(o){
+  if(o.spark){score+=o.v;}else{hits++;streak++;mult=1+Math.min(4,Math.floor(streak/8));score+=o.v*mult;
+    if(streak===8)toast('В ТАКТ');else if(streak===16)toast('ДЕРЖИШЬ');else if(streak===32)toast('РЕЗИДЕНТ');}
+  if(o.kind==='gate'){toast('ДРОП');shake=1}
+  var sp=project(0,0,0);burst(sp.x+(o.lane<0?0:LANES[o.lane]*W*0.5),sp.y-H*0.02,o.kind==='snare'?'#FF3FB4':o.kind==='gate'?'#FFD75E':'#48C8FF',o.spark?3:10);
+  $('score').textContent=score.toLocaleString('ru-RU');$('mult').textContent='x'+mult;$('mult').style.opacity=mult>1?1:0;updSync();
+}
+function onMiss(o){misses++;if(streak>=8)toast('МИМО');streak=0;mult=1;$('mult').style.opacity=0;shake=Math.max(shake,0.35);updSync()}
+function updSync(){var done=hits+misses;$('sync').textContent=(done?Math.round(100*hits/done):100)+'%'}
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');toastT=0.7}
+
+/* ---------- рендер ---------- */
+function render(dt){
+  ctx.drawImage(skyC,0,0,W,H);
+  if(!chart){return}
+  var t=state==='play'?trackTime():roundFrom;
+  var I=chart.intensityAt(t),sec=chart.secAt(t),isDrop=sec&&sec.type==='drop',isBreak=sec&&sec.type==='break';
+  var col=isDrop?[255,63,180]:isBreak?[72,200,255]:[138,61,255];
+  auroraT+=dt*(0.4+I);
+  // сегменты дороги (нужны до неба: параллакс по кривизне)
+  var camZ=(t-roundFrom)*SPEED,far=APPROACH*SPEED+SEG*3,n=Math.ceil(far/SEG),baseZ=Math.floor(camZ/SEG)*SEG;
+  var pts=[],x=0,dx=0,basePct=(camZ-baseZ)/SEG,c0=curveAt(baseZ/SPEED+roundFrom);dx=-c0*basePct*CURVE_K;var yc=hillAt(t);
+  for(var i=0;i<=n;i++){var z=baseZ+i*SEG,tt=z/SPEED+roundFrom;pts.push({z:z-camZ,x:x,y:hillAt(tt)-yc});x+=dx;dx+=curveAt(tt)*CURVE_K}
+  var horizonX=pts[n].x; // куда убегает дорога: сдвигаем небо в противоположную сторону
+  var par=Math.max(-1,Math.min(1,horizonX/3));
+  // сияние: три ленты, цвет по секции, дышат по интенсивности
+  ctx.globalCompositeOperation='lighter';
+  for(i=0;i<3;i++){var y0=H*(0.06+i*0.09)+Math.sin(auroraT*0.7+i*2)*H*0.02,hgt=H*(0.12+0.08*I),a=(0.22+0.3*I)*(1-i*0.2)*(0.7+0.3*beatPulse);
+    var g=ctx.createLinearGradient(0,y0,0,y0+hgt);var c=i===1?col:(i===0?[72,200,255]:[138,61,255]);g.addColorStop(0,'rgba('+c.join(',')+',0)');g.addColorStop(.5,'rgba('+c.join(',')+','+a+')');g.addColorStop(1,'rgba('+c.join(',')+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,y0);for(var k=0;k<=8;k++){var xx=k*W/8,yy=y0+Math.sin(auroraT+k*0.9+i)*H*0.03;ctx.lineTo(xx,yy)}ctx.lineTo(W,y0+hgt*2);ctx.lineTo(0,y0+hgt*2);ctx.closePath();ctx.fill()}
+  ctx.globalCompositeOperation='source-over';
+  // звёзды с параллаксом
+  var sx0=-W*0.5-par*W*0.25;ctx.drawImage(starsC.c,sx0,0,W*2,H*HZ);
+  // кольцо на горизонте, пульсирует на бит
+  var R=SP.ring.w/2,rs=1+beatPulse*0.06*(0.5+I);ctx.save();ctx.beginPath();ctx.rect(0,0,W,H*HZ);ctx.clip();ctx.globalAlpha=0.55+0.45*I;ctx.drawImage(SP.ring.c,W/2-par*W*0.12-R*rs,H*HZ-R*rs*1.75,R*2*rs,R*2*rs);ctx.restore();
+  // горы с параллаксом
+  ctx.drawImage(mtnC.c,-W*0.5-par*W*0.4,H*HZ-mtnC.h+3,W*2,mtnC.h);
+  // шейк
+  var sx=shake>0?(Math.random()-0.5)*12*shake:0,sy=shake>0?(Math.random()-0.5)*10*shake:0;ctx.save();ctx.translate(sx,sy);
+  // низ под дорогой: туман
+  var fog=ctx.createLinearGradient(0,H*HZ,0,H);fog.addColorStop(0,'rgba('+col.join(',')+',.10)');fog.addColorStop(.3,'rgba(6,8,18,0)');ctx.fillStyle=fog;ctx.fillRect(0,H*HZ,W,H*(1-HZ));
+  for(i=n-1;i>=1;i--){var a2=pts[i-1],b=pts[i];if(a2.z<-CAM_D*0.85)continue;
+    var pa=project(a2.x-ROAD_W,a2.y,a2.z),pb=project(a2.x+ROAD_W,a2.y,a2.z),pc=project(b.x+ROAD_W,b.y,b.z),pd=project(b.x-ROAD_W,b.y,b.z);
+    if(pa.y<H*HZ-2&&pd.y<H*HZ-2)continue;
+    var stripe=(Math.floor((a2.z+camZ)/STRIPE)&1),glow=Math.max(0,1-a2.z/far);
+    ctx.fillStyle=stripe?'#0A0E1D':'#0D1228';ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.lineTo(pc.x,pc.y);ctx.lineTo(pd.x,pd.y);ctx.closePath();ctx.fill();
+    // поперечные линии сетки на бит (каждые STRIPE единиц), ярче на пульсе
+    if(stripe){ctx.strokeStyle='rgba('+col.join(',')+','+(0.08+0.25*glow*(0.5+0.5*beatPulse))+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke()}
+    var lw=Math.max(1.5,10*pa.s),ga=0.2+0.8*glow*(0.75+0.25*beatPulse);
+    ctx.lineWidth=lw;ctx.strokeStyle='rgba(72,200,255,'+ga+')';ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pd.x,pd.y);ctx.stroke();
+    ctx.strokeStyle='rgba('+col.join(',')+','+ga+')';ctx.beginPath();ctx.moveTo(pb.x,pb.y);ctx.lineTo(pc.x,pc.y);ctx.stroke();
+    ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,'+(0.03+0.09*glow)+')';for(k=-1;k<=1;k+=2){var l=k*ROAD_W/3,p=project(a2.x+l,a2.y,a2.z),q=project(b.x+l,b.y,b.z);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+  }
+  function roadX(z){var k=z/SEG,i=Math.floor(k);if(i<0)return pts[0].x;if(i>=n)return pts[n].x;var f=k-i;return pts[i].x*(1-f)+pts[i+1].x*f}
+  function roadY(z){var k=z/SEG,i=Math.floor(k);if(i<0)i=0;if(i>=n)i=n-1;var f=k-i;return pts[i].y*(1-f)+pts[i+1].y*f}
+  for(i=chart.objs.length-1;i>=0;i--){var o=chart.objs[i],z=(o.t-t)*SPEED;if(z>far)continue;if(z<-CAM_D*0.8)break;
+    var zz=z-(camZ-baseZ),ox=roadX(zz),oy=roadY(zz);
+    if(o.kind==='gate'){var p1=project(ox-ROAD_W,oy,z),p2=project(ox+ROAD_W,oy,z),hh=p1.s*H*0.2;
+      ctx.globalAlpha=o.hit?0.15:0.9;ctx.fillStyle='#FFD75E';ctx.fillRect(p1.x,p1.y-hh,p2.x-p1.x,Math.max(2,p1.s*8));ctx.fillRect(p1.x,p1.y-hh,Math.max(2,p1.s*6),hh);ctx.fillRect(p2.x-Math.max(2,p1.s*6),p1.y-hh,Math.max(2,p1.s*6),hh);ctx.globalAlpha=1;continue}
+    var p=project(ox+LANES[o.lane]*ROAD_W,oy,z),s=p.s*W*0.19;
+    if(o.hit){var age=t-o.hitT;if(age>0.2)continue;ctx.globalAlpha=1-age*5;var sc=1+age*4;ctx.drawImage(SP.kick.c,p.x-s*sc,p.y-s*1.7*sc,s*2*sc,s*2*sc);ctx.globalAlpha=1;continue}
+    if(o.spark){var r=Math.max(2,s*0.35);ctx.globalAlpha=o.missed?0.2:0.9;ctx.drawImage(SP.spark.c,p.x-r,p.y-s*0.4-r,r*2,r*2);ctx.globalAlpha=1;continue}
+    var spr=o.missed?SP.dead:(o.kind==='snare'?SP.snare:SP.kick);
+    ctx.drawImage(spr.c,p.x-s,p.y-s*1.7,s*2,s*2);
+  }
+  // корабль
+  var sp=project(pts[0].x+shipX*ROAD_W,pts[0].y,0);
+  if(SP.ship){var w=SP.ship.w*0.9,h=SP.ship.h*0.9;ctx.save();ctx.translate(sp.x,sp.y-h*0.3);ctx.rotate((targetX-shipX)*0.6);ctx.drawImage(SP.ship.c,-w/2,-h/2,w,h);ctx.restore();
+    // след под кораблём
+    var tr=ctx.createRadialGradient(sp.x,sp.y,2,sp.x,sp.y,W*0.12);tr.addColorStop(0,'rgba(72,200,255,'+(0.35+0.3*beatPulse)+')');tr.addColorStop(1,'rgba(72,200,255,0)');ctx.fillStyle=tr;ctx.fillRect(sp.x-W*0.12,sp.y-W*0.06,W*0.24,W*0.14)}
+  // частицы
+  for(i=parts.length-1;i>=0;i--){var q2=parts[i];q2.t+=dt;if(q2.t>=q2.life){parts.splice(i,1);continue}q2.x+=q2.vx*dt;q2.y+=q2.vy*dt;q2.vy+=400*dt;ctx.globalAlpha=1-q2.t/q2.life;ctx.fillStyle=q2.col;ctx.fillRect(q2.x,q2.y,q2.r,q2.r)}
+  ctx.globalAlpha=1;ctx.restore();
+  // виньетка сверху
+  ctx.fillStyle='rgba(0,0,0,'+(0.12+0.25*(1-I))+')';ctx.fillRect(0,0,W,H*0.08);
+}
+resize();
+if(DBG){window.__state=function(){return{state:state,t:trackTime(),score:score,hits:hits,misses:misses,total:total,streak:streak}};window.__auto=function(v){autopilot=v!==false};window.__pick=function(i){pick(lib[i||0])}}
+</script></body></html>
