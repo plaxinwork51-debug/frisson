@@ -36,6 +36,9 @@ h1{font-family:Unbounded;font-weight:900;font-size:40px;letter-spacing:.02em;mar
 .mode{width:100%;max-width:420px;display:flex;background:rgba(255,255,255,.06);border-radius:14px;padding:4px;margin-top:16px}
 .mode div{flex:1;text-align:center;padding:11px;border-radius:11px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
 .mode .on{background:var(--cyan);color:#041018}
+.beta{width:100%;max-width:420px;margin:0 0 14px;padding:12px 14px;border-radius:14px;background:rgba(255,215,94,.08);border:1px solid rgba(255,215,94,.35)}
+.beta b{display:block;font-family:Unbounded;font-size:12px;letter-spacing:.08em;color:#FFD75E;margin-bottom:4px}
+.beta span{font-size:13px;color:var(--txt);line-height:1.4}
 .hint{margin-top:auto;padding-top:18px;color:var(--mut);font-size:12px;text-align:center}
 #gear{position:fixed;z-index:7;top:calc(var(--sat) + 14px);right:14px;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.08);border:0;color:#fff;font-size:20px}
 #gear[hidden]{display:none}
@@ -93,6 +96,7 @@ h1{font-family:Unbounded;font-weight:900;font-size:40px;letter-spacing:.02em;mar
   <div class="logo"><svg viewBox="0 0 566.22 362.88" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M0,362.03c20.55-46.23,57.32-83.51,98.46-112.14,129.14-89.3,309.9-71.08,418.75,41.98,15.01,15.42,28.95,32.08,39.61,50.84,3.48,6.28,6.72,12.66,9.4,19.32-6.98-8.06-13.65-16.28-20.58-24.34-9.03-10.39-18.54-21.27-28.35-30.9-139.78-136.63-362.71-124.39-489.96,22.84-9.01,9.96-18.89,21.96-27.33,32.4h0Z"/><path d="M292.11,202.22c-1.15,39.97-3.08,79.92-5.28,119.85-.73,13.32-1.68,26.63-3.72,39.95-3.9-26.56-4.24-53.2-5.81-79.9-1.27-26.63-2.44-53.26-3.19-79.9-.12-4.97,3.81-9.1,8.78-9.22,5.12-.14,9.36,4.1,9.22,9.22h0Z"/><path d="M140.66,361.69c12.26-37.96,28.69-74.94,52.74-107.04,19.2-26.25,40.45-47.31,73.7-53.89,10.35-1.95,21.05-1.98,31.01.55.5.13.8.63.67,1.13-.08.33-.34.58-.65.67-9.75,2.68-18.74,5.73-27.17,9.77-16.95,8.06-31.31,19.35-45.79,31.2-7.26,5.97-14.27,12.48-20.6,19.67-12.75,14.48-24.05,30.35-34.19,46.86-10.33,16.64-19.5,34.1-28.04,51.75-.21.46-.76.65-1.22.43-.41-.2-.6-.67-.46-1.09h0Z"/><path d="M431.02,362.36c-16.91-34.95-36.38-69.21-61.99-98.5-6.3-7.19-13.28-13.7-20.51-19.68-14.42-11.85-28.71-23.18-45.61-31.26-8.4-4.06-17.35-7.11-27.08-9.79-.5-.13-.81-.65-.67-1.15.09-.33.35-.57.67-.65,5-1.25,10.17-1.93,15.34-1.95,15.8-.21,31.39,4.82,45.09,12.5,18.28,10.17,31.73,26.55,43.95,42.9,12.06,16.12,22.15,33.51,30.76,51.6,8.53,17.95,15.69,36.41,21.71,55.31.16.47-.1.98-.57,1.14-.44.15-.91-.07-1.1-.48h0Z"/><path d="M283.11,302.54c-85.15,0-171.34-19.68-171.34-57.29h18c0,6.62,12.71,17.07,41.11,25.52,29.85,8.88,69.71,13.77,112.23,13.77s82.37-4.89,112.23-13.77c28.4-8.45,41.11-18.91,41.11-25.52h18c0,37.61-86.2,57.29-171.34,57.29Z"/><path d="M226.02,142.8c1.34,7.51.68,13.03-1.97,16.55-2.65,3.53-7.76,5.96-15.34,7.32-13.43,2.39-21.24-2.54-23.42-14.82-.26-1.44-.54-3.85-.84-7.22l13.75-2.45.71,4.01c.59,3.32,1.2,5.45,1.81,6.38,1.1,1.59,3.02,2.14,5.77,1.65,3.97-.71,5.58-3.16,4.84-7.34l-.96-5.42c-.59-3.32-2.11-5.14-4.55-5.45-.92-.13-3.58.19-7.98.98l-2.1-11.8c4.19-.75,6.72-1.38,7.59-1.91,1.88-1.15,2.52-3.43,1.91-6.82-.41-2.31-1.03-3.88-1.84-4.7-.82-.82-2.35-1.04-4.58-.64-2.74.49-4.26,1.62-4.54,3.38-.16.77.06,2.86.67,6.25l-13.21,2.36c-.68-2.11-1.07-3.5-1.19-4.15-1.12-6.28-.25-11.02,2.61-14.21,2.53-2.91,7.01-4.94,13.44-6.08,6.86-1.22,11.94-.94,15.24.86,3.78,2.01,6.27,6.33,7.45,12.97.98,5.49-.63,10.24-4.83,14.27,6.19,2.1,10.04,7.45,11.57,16.04Z"/><path d="M278.05,139.08c.44,7.1-.81,12.23-3.73,15.38-2.93,3.16-7.98,4.96-15.15,5.4l-21.63,1.33-4.14-67.19,20.97-1.29c7.17-.44,12.1.21,14.78,1.95,3.22,2.15,5.04,6.67,5.46,13.55.36,5.78-1.64,10.31-6,13.59,3.36,2.07,5.75,4.5,7.17,7.27,1.25,2.42,2.01,5.75,2.27,10ZM260.19,110.43c-.23-3.81-2.15-5.6-5.73-5.38l-5.82.36.79,12.74,3.18-.2c5.34-.33,7.87-2.84,7.58-7.52ZM262.83,138.92c-.42-6.88-3.09-10.17-7.99-9.87l-4.72.29,1.13,18.33,3.73-.23c3.22-.2,5.38-.86,6.49-2,1.11-1.13,1.56-3.31,1.36-6.53Z"/><path d="M329.53,118.01c-.57,10.54-2.24,19.78-5.02,27.71-3.04,8.65-7.7,16.73-13.98,24.25l-26.14-1.41.53-9.89,11.64.63c-7.13-12.13-10.24-26.66-9.33-43.58l1.31-24.27,15.16.82c-.99,18.38-1.46,29.15-1.4,32.31.06,9.99,1.4,20.42,4.04,31.28,3.71-10.45,6.12-20.67,7.26-30.67.39-3.14,1.09-13.89,2.08-32.28l15.16.82-1.31,24.27Z"/><path d="M388.54,105.2c-1.76,10.04-7.04,18.12-15.86,24.25,3.85,5.66,6,12.1,6.45,19.33.31,5.04-.29,11.86-1.79,20.46l-14.95-2.62c1.21-6.93,1.88-12.25,2-15.95.12-6.23-.85-11.46-2.89-15.69-1.87.79-3.87,1.48-6,2.08l-4.82,27.52-14.95-2.62,11.6-66.31,14.95,2.62-4.93,28.17c8.84-4.56,14.38-13.27,16.63-26.12l14.95,2.62c-.04.22-.11.62-.21,1.19-.08.43-.14.8-.19,1.08Z"/><path d="M112.75,70.27c2.45,7.69,2.66,13.51.65,17.46-2.01,3.95-6.83,7.14-14.45,9.56-7.69,2.45-13.49,2.64-17.42.58-3.93-2.06-7.11-6.93-9.56-14.62l-7.91-24.84c-2.42-7.62-2.62-13.42-.58-17.42,2.04-4,6.86-7.21,14.48-9.63,9.29-2.96,15.98-2.51,20.05,1.35,2.66,2.54,5.61,8.91,8.86,19.11l-14.78,4.71-2.72-8.54c-.73-2.29-1.55-3.79-2.47-4.49-1.17-1-2.9-1.14-5.21-.41-2.3.73-3.69,1.83-4.15,3.28-.34,1.1-.13,2.84.62,5.2l9.26,29.1c.75,2.37,1.59,3.9,2.5,4.6,1.14.94,2.9,1.03,5.28.27,2.31-.73,3.69-1.82,4.15-3.27.27-1.08.03-2.8-.72-5.16l-2.72-8.54,14.78-4.71,2.04,6.39Z"/><path d="M163.02,58.39c1.8,7.86,1.53,13.68-.8,17.45-2.34,3.77-7.4,6.55-15.19,8.33-7.86,1.8-13.67,1.51-17.41-.87-3.74-2.38-6.51-7.5-8.31-15.36l-5.82-25.41c-1.78-7.79-1.49-13.59.87-17.41,2.36-3.81,7.44-6.61,15.23-8.4,7.79-1.78,13.56-1.49,17.3.89,3.74,2.38,6.51,7.5,8.31,15.36l3.39,14.8-26.91,6.16,2.93,12.8c.55,2.42,1.33,4.07,2.34,4.96,1.01.89,2.79,1.05,5.33.46,2.4-.55,3.9-1.53,4.5-2.93.52-1.09.5-2.84-.05-5.25l-1.41-6.17,14.8-3.39.91,3.97ZM143.14,39.58l-1.14-5c-.57-2.48-1.29-4.14-2.17-4.98-1.18-1.15-3.01-1.44-5.48-.87-2.55.58-4.11,1.65-4.67,3.19-.44,1.07-.37,2.88.21,5.43l1.14,5,12.12-2.77Z"/><path d="M215.08,51.54c1.01,7.04.19,12.25-2.47,15.64-2.66,3.38-7.55,5.59-14.66,6.61l-21.45,3.09-9.59-66.63,20.8-2.99c7.11-1.02,12.07-.77,14.89.75,3.38,1.89,5.56,6.24,6.54,13.06.83,5.74-.8,10.41-4.87,14.04,3.52,1.79,6.1,4.01,7.74,6.67,1.45,2.31,2.47,5.57,3.07,9.78ZM194.95,24.43c-.54-3.77-2.59-5.41-6.15-4.89l-5.77.83,1.82,12.63,3.16-.45c5.3-.76,7.61-3.47,6.95-8.11ZM199.89,52.62c-.98-6.82-3.9-9.88-8.77-9.19l-4.68.67,2.62,18.18,3.7-.53c3.19-.46,5.29-1.3,6.3-2.52,1.01-1.22,1.29-3.42.83-6.62Z"/><path d="M265.37,47.2c.49,8.05-.72,13.75-3.63,17.08-2.92,3.34-8.37,5.25-16.34,5.74-8.05.49-13.73-.74-17.03-3.69-3.31-2.96-5.2-8.46-5.7-16.51l-1.6-26.02c-.49-7.98.74-13.66,3.7-17.03,2.95-3.38,8.42-5.31,16.39-5.8,7.98-.49,13.62.75,16.92,3.7,3.3,2.96,5.2,8.46,5.7,16.51l.93,15.15-27.56,1.69.8,13.1c.15,2.48.65,4.24,1.5,5.28.85,1.04,2.58,1.49,5.19,1.33,2.46-.15,4.1-.87,4.91-2.16.69-.99.96-2.72.8-5.19l-.39-6.32,15.15-.93.25,4.06ZM248.82,25.4l-.31-5.12c-.16-2.54-.6-4.3-1.33-5.27-.98-1.32-2.74-1.91-5.27-1.75-2.61.16-4.32.96-5.13,2.39-.61.99-.84,2.78-.68,5.4l.31,5.12,12.41-.76Z"/><path d="M318.55,46.7c-.16,7.85-.87,13.11-2.1,15.8-2.09,4.58-6.48,6.8-13.18,6.66-2.72-.06-5.1-.77-7.13-2.13-1.38-.98-3.15-2.74-5.3-5.28l-.34,16.06-15.18-.32,1.62-77.2,14.19.3-.14,6.49c2.84-2.58,5.04-4.33,6.6-5.25,2.38-1.27,5.1-1.87,8.18-1.81,5.65.12,9.45,2.4,11.41,6.84,1.4,3.04,2.04,7.74,1.9,14.12l-.54,25.73ZM302.86,49.82l.64-30.53c.05-2.41-.25-4.09-.89-5.06-.79-1.33-2.4-2.02-4.84-2.07-2.44-.05-4.04.44-4.81,1.49-.76,1.04-1.17,2.84-1.22,5.39l-.64,30.53c-.05,2.55.24,4.31.89,5.27.79,1.19,2.41,1.8,4.85,1.85,2.44.05,4.12-.53,5.03-1.76.61-.94.95-2.64,1-5.12Z"/><path d="M369.29,73.56l-15.1-1.6,3.24-30.52-12.14-1.29-3.24,30.52-15.1-1.6,7.11-66.94,15.09,1.6-2.51,23.63,12.14,1.29,2.51-23.63,15.1,1.6-7.11,66.94Z"/><path d="M422.99,61.83c-1.66,7.89-3.98,13.03-6.95,15.4-3.35,2.74-8.87,3.3-16.54,1.69l-21.1-4.45,13.88-65.87,14.53,3.06-5.06,24c2.99.03,5.35.23,7.07.59,6.96,1.47,11.5,4.45,13.63,8.94,1.87,3.92,2.05,9.46.54,16.64ZM408.99,58.94c.66-3.14.8-5.42.43-6.84-.51-2.19-2.13-3.58-4.86-4.15-1.79-.38-3.55-.56-5.28-.55l-3.77,17.87,3.12.66c3.16.67,5.5.47,7.04-.58,1.53-1.05,2.64-3.19,3.31-6.4ZM439.86,87.42l-14.53-3.06,13.88-65.87,14.53,3.06-13.88,65.87Z"/><path d="M488.3,102.93l-14.47-4.6,6.43-20.23c-6.52,7.93-13.07,13.27-19.64,16.03l-13.21-4.2,20.4-64.16,14.46,4.6-14.2,44.66c7.41-2.72,14.02-10.47,19.86-23.24,1.62-3.64,3.72-9.51,6.29-17.62l14.47,4.6-20.4,64.15ZM507.02,20.82c-3.82,6.94-9.58,9.19-17.27,6.75-7.69-2.45-11.09-7.6-10.2-15.48l7.38.38c-.69,3.63.2,6.14,2.68,7.55.65.36,1.4.68,2.24.94,2.72.87,4.75.72,6.08-.43,1.33-1.15,2.27-2.37,2.84-3.66l6.25,3.95Z"/></svg></div>
   <h1>ФРИССОН</h1>
   <div class="slogan">Почувствуй музыку</div>
+  <div class="beta"><b>БЕТА · ПЕРВЫЙ ТРЕК</b><span>Проверяем на живых людях: Pendulum «Tarantula», 60 секунд самого плотного куска. Веди корабль пальцем по кубам, шипы объезжай. Скоро: свои треки с телефона и библиотека drum & bass, techno, house.</span></div>
   <div class="cards" id="cards"></div>
   <div class="mode"><div class="on" data-m="60">60 секунд</div><div data-m="full">Весь трек</div></div>
   <input type="file" id="file" accept="audio/*" hidden>
@@ -130,6 +134,7 @@ h1{font-family:Unbounded;font-weight:900;font-size:40px;letter-spacing:.02em;mar
     <button class="btn b1" id="bShare">ПОДЕЛИТЬСЯ</button>
     <div class="row"><button class="btn" id="bAgain">ЕЩЁ РАЗ</button><button class="btn" id="bOther">ДРУГОЙ ТРЕК</button></div>
   </div>
+  <div class="fun" style="border-top:0;padding-top:0;margin-top:10px;color:#FFD75E">Это бета. Что не так, пиши: @plxn_51</div>
   <div class="fun"><b>Северный Звук</b>: звук и свет для твоего события → taplink.cc/severzvyk</div>
 </section>
 
@@ -138,7 +143,7 @@ h1{font-family:Unbounded;font-weight:900;font-size:40px;letter-spacing:.02em;mar
 'use strict';
 var $=function(id){return document.getElementById(id)};
 var cv=$('c'),ctx=cv.getContext('2d'),W=0,H=0,DPR=1;
-var DBG=/[?&]dbg=1/.test(location.search);
+var DBG=/[?&]dbg=1/.test(location.search),BETA=true;
 var TEXTS={
   ranks:[[0,'ГЛУХОЙ','Ты вообще слышал, что играло?'],[40,'СЛУШАТЕЛЬ','Бит поймал, дорогу нет'],[60,'ТАНЦПОЛ','Уже качаешь, ещё не ведёшь'],[75,'ДИДЖЕЙ','Держишь бит, как пульт'],[90,'РЕЗИДЕНТ СЕВЕРНОГО ЗВУКА','Это твоя трасса. Забирай.']],
   anPhrases:['Слушаю бочку…','Ищу снейр…','Считаю бит…','Строю трассу…','Ставлю блоки…','Почти… держи палец наготове'],
@@ -174,6 +179,7 @@ function buildCards(){
     c.onclick=function(){var was=c.classList.contains('open');[].forEach.call(box.children,function(x){x.classList.remove('open')});if(!was)c.classList.add('open')};
     box.appendChild(c);
   });
+  if(BETA)return;
   var own=document.createElement('div');own.className='card own';own.innerHTML='<b>+ СВОЙ ТРЕК</b><span>mp3 с телефона, никуда не улетает</span>';
   own.onclick=function(){audioInit();$('file').click()};box.appendChild(own);
 }
@@ -295,7 +301,7 @@ $('gear').onclick=function(){audioInit();$('latR').value=manualLat;$('latV').tex
 $('latR').oninput=function(){manualLat=+this.value;$('latV').textContent=(manualLat>0?'+':'')+manualLat+' мс'};
 $('bSetOk').onclick=function(){try{localStorage.setItem('frisson_lat',manualLat)}catch(e){}$('sSet').hidden=true};
 $('bOther').onclick=toStart;$('bQuit').onclick=toStart;
-$('bShare').onclick=function(){var txt='Я пролетел '+track.title+' на '+$('eSync').textContent.replace('СИНХРОН ','')+' синхрона. Слабо больше? '+location.href.split('?')[0];if(navigator.share)navigator.share({text:txt}).catch(function(){});else{try{navigator.clipboard.writeText(txt);alert('Ссылка скопирована')}catch(e){}}};
+$('bShare').onclick=function(){var txt='Я пролетел '+track.title+' на '+$('eSync').textContent.replace('СИНХРОН ','')+' синхрона в бете ФРИССОНа. Слабо больше? '+location.href.split('?')[0];if(navigator.share)navigator.share({text:txt}).catch(function(){});else{try{navigator.clipboard.writeText(txt);alert('Ссылка скопирована')}catch(e){}}};
 document.addEventListener('visibilitychange',function(){if(document.hidden&&state==='play'){pause()}});
 function pause(){state='pause';offsetT=trackTime();stopAudio();$('sPause').hidden=false}
 $('bResume').onclick=function(){audioInit();$('sPause').hidden=true;var when=actx.currentTime+0.6;playFrom(offsetT,when);state='play';lastTs=0;requestAnimationFrame(loop)};
@@ -399,12 +405,13 @@ function onHit(o){
   hits++;streak++;mult=1+Math.min(4,Math.floor(streak/8));score+=o.v*mult;
   if(streak===8)toast('В ТАКТ');else if(streak===16)toast('ДЕРЖИШЬ');else if(streak===32)toast('РЕЗИДЕНТ');
   var col=o.kind==='gate'?'#FFD75E':hsl(hueAt(o.t),65);
-  if(o.kind==='gate'){toast('ДРОП');shake=1.2;flash=1;dropBoost=1.6;burst(W/2,shipPx.y,'#FFD75E',36);burst(W/2,shipPx.y,'#FF3FB4',24)}
+  if(o.kind==='gate'){toast('ДРОП');vib(30);shake=1.2;flash=1;dropBoost=1.6;burst(W/2,shipPx.y,'#FFD75E',36);burst(W/2,shipPx.y,'#FF3FB4',24)}
   else burst(shipPx.x,shipPx.y,col,o.kind==='chip'?5:12);
   fx.push({x:shipPx.x,y:shipPx.y,t:0,life:o.kind==='gate'?0.6:0.3,col:col,r0:o.kind==='gate'?30:14,r1:o.kind==='gate'?W*0.6:W*0.16});
   $('score').textContent=score.toLocaleString('ru-RU');$('mult').textContent='x'+mult;$('mult').style.opacity=mult>1?1:0;updSync();
 }
-function onBad(o){bads++;if(DBG)(window.__log=window.__log||[]).push({t:+o.t.toFixed(3),lane:o.lane,ship:+shipX.toFixed(2),tgt:+targetX.toFixed(2)});score=Math.max(0,score-20);streak=0;mult=1;$('mult').style.opacity=0;shake=Math.max(shake,0.9);redFlash=1;toast('БАМ');burst(shipPx.x,shipPx.y,'#FF3B5C',16);$('score').textContent=score.toLocaleString('ru-RU')}
+function vib(p){try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}
+function onBad(o){bads++;vib([50,40,50]);if(DBG)(window.__log=window.__log||[]).push({t:+o.t.toFixed(3),lane:o.lane,ship:+shipX.toFixed(2),tgt:+targetX.toFixed(2)});score=Math.max(0,score-20);streak=0;mult=1;$('mult').style.opacity=0;shake=Math.max(shake,0.9);redFlash=1;toast('БАМ');burst(shipPx.x,shipPx.y,'#FF3B5C',16);$('score').textContent=score.toLocaleString('ru-RU')}
 function onMiss(o){misses++;if(DBG)(window.__log=window.__log||[]).push({miss:1,t:+o.t.toFixed(3),lane:o.lane,ship:+shipX.toFixed(2),tgt:+targetX.toFixed(2)});if(streak>=8)toast('МИМО');streak=0;mult=1;$('mult').style.opacity=0;shake=Math.max(shake,0.35);updSync()}
 function updSync(){var done=hits+misses;$('sync').textContent=(done?Math.round(100*hits/done):100)+'%'}
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');toastT=0.7}
@@ -465,18 +472,6 @@ function render(dt){
   function roadY(z){var k=z/SEG,i=Math.floor(k);if(i<0)i=0;if(i>=n)i=n-1;var f=k-i;return pts[i].y*(1-f)+pts[i+1].y*f}
   var rel=camZ-baseZ;
   function objPt(z,laneX){var zz=z-rel;return project(roadX(zz)+laneX*ROAD_W,roadY(zz),z)}
-  // дорожка-поводырь: лента цвета кубов, плавный S-переход между полосами
-  var pp=[],pi0=0;while(pi0<chart.path.length&&chart.path[pi0].t<t-0.6)pi0++;
-  var prevZ=-CAM_D*0.8,prevLane=null;
-  for(i=pi0;i<chart.path.length;i++){var po=chart.path[i],pz=Z_HIT+(po.t-t)*SPEED;if(pz>far)break;var lx=LANES[po.lane];
-    if(prevLane===null){pp.push([prevZ,lx]);pp.push([pz,lx])}
-    else if(prevLane===lx)pp.push([pz,lx]);
-    else{for(k=1;k<=6;k++){var f=k/6,sm=f*f*(3-2*f);pp.push([prevZ+(pz-prevZ)*f,prevLane+(lx-prevLane)*sm])}}
-    prevZ=pz;prevLane=lx}
-  if(pp.length>1){ctx.globalCompositeOperation='lighter';var pr=[];for(i=0;i<pp.length;i++)pr.push(objPt(pp[i][0],pp[i][1]));
-    for(var pass=0;pass<2;pass++){ctx.beginPath();for(i=0;i<pr.length;i++){if(i)ctx.lineTo(pr[i].x,pr[i].y);else ctx.moveTo(pr[i].x,pr[i].y)}
-      ctx.lineWidth=pass?Math.max(1,W*0.008):W*0.035;ctx.strokeStyle=pass?'rgba(255,255,255,'+(0.35+0.25*beatPulse)+')':hsla(hNow,65,0.2+0.14*beatPulse);ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke()}
-    ctx.globalCompositeOperation='source-over'}
   // хэты: искры по обочинам
   while(hatIdx<chart.hats.length&&chart.hats[hatIdx].t<t-0.4)hatIdx++;
   for(i=hatIdx;i<chart.hats.length;i++){var hh=chart.hats[i],hz=Z_HIT+(hh.t-t)*SPEED;if(hz>far)break;var hp=objPt(hz,hh.side*1.12),hr=Math.max(1.5,hp.s*W*0.05);
